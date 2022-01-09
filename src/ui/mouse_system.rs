@@ -1,4 +1,5 @@
 use crate::components::MainCamera;
+use crate::map::translation_to_point;
 use crate::resources::MousePosition;
 use bevy::prelude::*;
 
@@ -26,10 +27,12 @@ pub fn mouse_system(
 
         // apply the camera transform
         let pos_wld = camera_transform.compute_matrix() * p.extend(0.0).extend(1.0);
-        eprintln!("World coords: {}/{}", pos_wld.x, pos_wld.y);
 
         //store the result for futur use
-        mouse_position.x = pos_wld.x;
-        mouse_position.y = pos_wld.y;
+        mouse_position.translation_x = pos_wld.x;
+        mouse_position.translation_y = pos_wld.y;
+        let point = translation_to_point(Vec3::new(pos_wld.x, pos_wld.y, 1.));
+        mouse_position.grid_x = point.x;
+        mouse_position.grid_y = point.y;
     }
 }

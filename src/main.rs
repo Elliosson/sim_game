@@ -6,12 +6,13 @@ mod trees_system;
 mod ui;
 
 use bevy::{core::FixedTimestep, prelude::*};
+use bevy_egui::EguiPlugin;
 use components::*;
 use map::Map;
 use map_indexing_system::map_indexing_system;
 use resources::*;
 use trees_system::trees_system;
-use ui::mouse_system;
+use ui::*;
 
 const TIME_STEP: f32 = 1.0 / 60.0;
 const SCALE: i32 = 30;
@@ -19,6 +20,7 @@ const SCALE: i32 = 30;
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(EguiPlugin)
         .insert_resource(Map::default())
         .insert_resource(MousePosition::default())
         .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9))) // background color
@@ -28,6 +30,7 @@ fn main() {
                 .with_run_criteria(FixedTimestep::step(TIME_STEP as f64))
                 .with_system(map_indexing_system)
                 .with_system(trees_system)
+                .with_system(info_window_system)
                 .with_system(mouse_system),
         )
         .add_system(bevy::input::system::exit_on_esc_system)

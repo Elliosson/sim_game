@@ -40,17 +40,18 @@ impl Map {
     }
 }
 
-//TODO do something coherant for the convertion
-fn translation_to_point(translation: Vec3) -> GridPoint {
+// the sprite is anchored in the middle, the why add SCALE/2
+pub fn translation_to_point(translation: Vec3) -> GridPoint {
     let point = GridPoint {
-        x: (translation.x as i32 / SCALE),
-        y: (translation.y as i32 / SCALE),
+        x: ((translation.x + (SCALE as f32 / 2.)) / SCALE as f32).floor() as i32,
+        y: ((translation.y + (SCALE as f32 / 2.)) / SCALE as f32).floor() as i32,
     };
 
     return point;
 }
 
-fn point_to_translation(point: GridPoint) -> Vec3 {
+//TODO check that this is ok
+pub fn point_to_translation(point: GridPoint) -> Vec3 {
     let translation = Vec3::new((point.x * SCALE) as f32, (point.y * SCALE) as f32, 1.);
     return translation;
 }
