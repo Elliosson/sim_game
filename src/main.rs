@@ -8,7 +8,7 @@ const SCALE: i32 = 30;
 #[derive(Component)]
 struct Tree {}
 
-#[derive(Hash, PartialEq, Eq, Clone, Copy)]
+#[derive(Hash, PartialEq, Eq, Clone, Copy, Component)]
 struct GridPoint {
     x: i32,
     y: i32,
@@ -51,6 +51,7 @@ impl Map {
     }
 }
 
+//TODO do somthing coherant for the convertion
 fn translation_to_point(translation: Vec3) -> GridPoint {
     let point = GridPoint {
         x: (translation.x as i32 / SCALE),
@@ -58,6 +59,11 @@ fn translation_to_point(translation: Vec3) -> GridPoint {
     };
 
     return point;
+}
+
+fn point_to_translation(point: GridPoint) -> Vec3 {
+    let translation = Vec3::new((point.x * SCALE) as f32, (point.y * SCALE) as f32, 1.);
+    return translation;
 }
 
 fn main() {
@@ -79,15 +85,14 @@ fn main() {
 fn map_indexing_system(
     mut commands: Commands,
     mut map: ResMut<Map>,
-    transforms: Query<(Entity, &Transform)>,
+    transforms: Query<(Entity, &GridPoint)>,
 ) {
     //populate the map here
 
     map.clear();
 
-    for (entity, transform) in transforms.iter() {
-        let point = translation_to_point(transform.translation);
-        map.add(point, entity);
+    for (entity, point) in transforms.iter() {
+        map.add(point.clone(), entity);
     }
 }
 
@@ -120,7 +125,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             },
             ..Default::default()
         })
-        .insert(Tree {});
+        .insert(Tree {})
+        .insert(GridPoint { x: 0, y: -2 });
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -135,7 +141,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             },
             ..Default::default()
         })
-        .insert(Tree {});
+        .insert(Tree {})
+        .insert(GridPoint { x: 0, y: 2 });
 
     commands
         .spawn_bundle(SpriteBundle {
@@ -150,5 +157,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             },
             ..Default::default()
         })
-        .insert(Tree {});
+        .insert(Tree {})
+        .insert(GridPoint { x: 0, y: 0 });
 }
