@@ -9,3 +9,6 @@ pub struct GridPoint {
     pub x: i32,
     pub y: i32,
 }
+
+#[derive(Component)]
+pub struct MainCamera;
