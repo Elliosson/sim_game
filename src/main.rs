@@ -61,6 +61,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(GName {
+            text: "tree".to_string(),
+        })
         .insert(GridPoint { x: 0, y: -2 });
 
     commands
@@ -77,6 +80,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(GName {
+            text: "tree".to_string(),
+        })
         .insert(GridPoint { x: 0, y: 2 });
 
     commands
@@ -93,5 +99,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(GName {
+            text: "tree".to_string(),
+        })
         .insert(GridPoint { x: 0, y: 0 });
 }

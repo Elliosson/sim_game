@@ -32,7 +32,6 @@ pub fn mouse_system(
         mouse_position.translation_x = pos_wld.x;
         mouse_position.translation_y = pos_wld.y;
         let point = translation_to_point(Vec3::new(pos_wld.x, pos_wld.y, 1.));
-        mouse_position.grid_x = point.x;
-        mouse_position.grid_y = point.y;
+        mouse_position.grid = point;
     }
 }
