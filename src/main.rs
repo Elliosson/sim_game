@@ -1,39 +1,100 @@
 use bevy::{core::FixedTimestep, prelude::*};
+use std::cmp::{Eq, PartialEq};
+use std::collections::HashMap;
 
 const TIME_STEP: f32 = 1.0 / 60.0;
+const SCALE: i32 = 30;
 
 #[derive(Component)]
 struct Tree {}
 
-struct Map {}
+#[derive(Hash, PartialEq, Eq, Clone, Copy)]
+struct GridPoint {
+    x: i32,
+    y: i32,
+}
+
+struct Map {
+    pub width: i32,
+    pub height: i32,
+    pub tiles_content: HashMap<GridPoint, Vec<Entity>>,
+}
+
+impl Default for Map {
+    fn default() -> Self {
+        Map {
+            width: 100,
+            height: 100,
+            tiles_content: HashMap::new(),
+        }
+    }
+}
+
+impl Map {
+    // creating some interface because I wonder if I change the storage model of the map
+    pub fn clear(&mut self) {
+        self.tiles_content.clear();
+    }
+
+    pub fn add(&mut self, point: GridPoint, entity: Entity) {
+        let tile_content = self.tiles_content.entry(point).or_default();
+        tile_content.push(entity)
+    }
+
+    pub fn get(&self, point: GridPoint) -> Vec<Entity> {
+        let tile_content = self.tiles_content.get(&point);
+        if let Some(content) = tile_content {
+            return content.clone();
+        } else {
+            return Vec::new();
+        };
+    }
+}
+
+fn translation_to_point(translation: Vec3) -> GridPoint {
+    let point = GridPoint {
+        x: (translation.x as i32 / SCALE),
+        y: (translation.y as i32 / SCALE),
+    };
+
+    return point;
+}
 
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .insert_resource(Map {})
+        .insert_resource(Map::default())
         .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9))) // background color
         .add_startup_system(setup)
         .add_system_set(
             SystemSet::new()
                 .with_run_criteria(FixedTimestep::step(TIME_STEP as f64))
-                .with_system(map_system),
+                .with_system(map_indexing_system)
+                .with_system(tree_system),
         )
         .add_system(bevy::input::system::exit_on_esc_system)
         .run();
 }
 
-fn map_system(
+fn map_indexing_system(
     mut commands: Commands,
-    mut scoreboard: ResMut<Map>,
-    mut ball_query: Query<(&Transform)>,
+    mut map: ResMut<Map>,
+    transforms: Query<(Entity, &Transform)>,
 ) {
     //populate the map here
+
+    map.clear();
+
+    for (entity, transform) in transforms.iter() {
+        let point = translation_to_point(transform.translation);
+        map.add(point, entity);
+    }
 }
 
 fn tree_system(
     mut commands: Commands,
-    mut scoreboard: ResMut<Map>,
-    mut ball_query: Query<(&mut Tree, &Transform)>,
+    mut map: ResMut<Map>,
+    mut tree_query: Query<(&mut Tree, &Transform)>,
 ) {
     //stuff to do about tree go here
 }
