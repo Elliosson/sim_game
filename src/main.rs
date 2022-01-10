@@ -23,6 +23,7 @@ fn main() {
         .add_plugin(EguiPlugin)
         .insert_resource(Map::default())
         .insert_resource(MousePosition::default())
+        .insert_resource(SelectedEntity::default())
         .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9))) // background color
         .add_startup_system(setup)
         .add_system_set(
@@ -31,7 +32,8 @@ fn main() {
                 .with_system(map_indexing_system)
                 .with_system(trees_system)
                 .with_system(info_window_system)
-                .with_system(mouse_system),
+                .with_system(mouse_position_system)
+                .with_system(mouse_click_system),
         )
         .add_system(bevy::input::system::exit_on_esc_system)
         .run();
@@ -61,6 +63,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(Selectable {})
         .insert(GName {
             text: "tree".to_string(),
         })
@@ -80,6 +83,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(Selectable {})
         .insert(GName {
             text: "tree".to_string(),
         })
@@ -99,6 +103,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Tree {})
+        .insert(Selectable {})
         .insert(GName {
             text: "tree".to_string(),
         })

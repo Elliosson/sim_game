@@ -1,14 +1,18 @@
 use crate::components::GName;
 use crate::map::Map;
-use crate::resources::MousePosition;
+use crate::resources::{MousePosition, SelectedEntity};
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContext};
+
+// Create a Window with a lot of info about the current mouse tile and the world
+// Just add some usefull info in the window if you want
 
 pub fn info_window_system(
     egui_ctx: ResMut<EguiContext>,
 
     mouse_position: Res<MousePosition>,
     map: Res<Map>,
+    selected_entity: Res<SelectedEntity>,
     names: Query<&GName>,
 ) {
     egui::Window::new("Info")
@@ -33,6 +37,19 @@ pub fn info_window_system(
                             entity,
                             name.text.clone()
                         );
+                    }
+                }
+
+                if let Some(selected) = selected_entity.entity {
+                    if let Ok(name) = names.get_component::<GName>(selected) {
+                        text = format!(
+                            "{}\n selected entity: {:?}, name: {}",
+                            text,
+                            selected,
+                            name.text.clone()
+                        );
+                    } else {
+                        eprintln!("Error: the selected entity don't have a GName")
                     }
                 }
 

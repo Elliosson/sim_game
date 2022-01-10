@@ -3,7 +3,7 @@ use crate::map::translation_to_point;
 use crate::resources::MousePosition;
 use bevy::prelude::*;
 
-pub fn mouse_system(
+pub fn mouse_position_system(
     // need to get window dimensions
     wnds: Res<Windows>,
     mut mouse_position: ResMut<MousePosition>,
