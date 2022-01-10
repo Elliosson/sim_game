@@ -18,6 +18,22 @@ pub struct GName {
 #[derive(Component, Debug, Default, Clone)]
 
 pub struct MainCamera;
+
 #[derive(Component, Debug, Default, Clone)]
 
 pub struct Selectable;
+#[derive(Component, Debug, Default, Clone)]
+
+pub struct Colonist;
+
+#[derive(Component, Debug, Default, Clone)]
+
+pub struct Movable {
+    pub speed: f32,
+}
+
+#[derive(Component, Debug, Default, Clone)]
+
+pub struct WantMove {
+    pub target: GridPoint,
+}
