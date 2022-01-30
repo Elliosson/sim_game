@@ -1,6 +1,7 @@
 mod components;
 mod map;
 mod map_indexing_system;
+mod move_cooldown_system;
 mod movement_system;
 mod resources;
 mod tree_system;
@@ -11,6 +12,7 @@ use bevy_egui::EguiPlugin;
 use components::*;
 use map::Map;
 use map_indexing_system::map_indexing_system;
+use move_cooldown_system::move_cooldown_system;
 use movement_system::movement_system;
 use resources::*;
 use tree_system::tree_system;
@@ -36,13 +38,14 @@ fn main() {
                 .with_system(info_window_system)
                 .with_system(mouse_position_system)
                 .with_system(movement_system)
+                .with_system(move_cooldown_system)
                 .with_system(mouse_click_system),
         )
         .add_system(bevy::input::system::exit_on_esc_system)
         .run();
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup(mut commands: Commands, _asset_server: Res<AssetServer>) {
     // Add the game's entities to our world
 
     // cameras
@@ -67,6 +70,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(Tree {})
         .insert(Selectable {})
+        .insert(Blocking {})
         .insert(GName {
             text: "tree".to_string(),
         })
@@ -87,6 +91,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(Tree {})
         .insert(Selectable {})
+        .insert(Blocking {})
         .insert(GName {
             text: "tree".to_string(),
         })
@@ -107,6 +112,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         })
         .insert(Tree {})
         .insert(Selectable {})
+        .insert(Blocking {})
         .insert(GName {
             text: "tree".to_string(),
         })
@@ -126,7 +132,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..Default::default()
         })
         .insert(Colonist {})
-        .insert(Movable { speed: 2. })
+        .insert(Movable { speed: 5. })
         .insert(Selectable {})
         .insert(GName {
             text: "colonist".to_string(),
